@@ -24,3 +24,7 @@ as well as to provide the project team with clarity on the creation and scope of
 - Creating/editing/deleting projects
 - Managing members of a project
 - Changing members' roles
+
+## Video preview
+[![Video Preview](https://i.ibb.co/KDJg6jW/yt.png)](https://youtu.be/LAz1zvSTLjE)
+

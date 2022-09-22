@@ -1,0 +1,214 @@
+import styled, { css } from "styled-components";
+import LogoImg from "../../assets/logo.png";
+import Button from "../../shared/components/Button/Button";
+import { media } from "../../shared/utils/global";
+import { color, zIndexValues } from "../../shared/utils/styles";
+const smallView = css`
+	width: 40px;
+	.side-bar-top {
+		padding-left: 0;
+		padding-right: 0;
+		text-align: center;
+		display: block;
+	}
+	.side-bar-main,
+	.side-bar-logo {
+		display: none;
+	}
+	.side-bar-logout > span,
+	.side-bar-demo-button > span {
+		display: none;
+	}
+	.side-bar-logout,
+	.side-bar-demo-button {
+		transition: all 0.3s;
+		margin-left: 0;
+		margin-right: 0;
+		min-width: auto;
+		width: 100%;
+		border-radius: 0;
+		& > i {
+			margin-right: 0;
+		}
+	}
+	.resize-button {
+		& > i {
+			&::before {
+				content: "\f138";
+			}
+		}
+	}
+`;
+
+export const Container = styled.div`
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: ${zIndexValues.navLeft};
+	overflow: hidden;
+	background-color: ${color.ternary};
+	height: 100%;
+	width: 240px;
+	transition: all 0.3s;
+	color: #fff;
+	${media.large`
+    &.default-side-bar{
+      ${smallView};
+    }
+  `};
+	@media (min-width: 1251px) {
+		&.secondary-side-bar {
+			${smallView};
+		}
+	}
+`;
+
+export const Wrapper = styled.div`
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	overflow-y: auto;
+	overflow-x: hidden;
+`;
+
+export const Blanket = styled.div`
+	background-color: ${color.white};
+	height: 100%;
+	width: 100vw;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 50;
+	display: none;
+	${media.large`
+    display: ${(props) => (props.isActive ? "block" : "none")};
+  `};
+`;
+
+export const Top = styled.div`
+	text-align: right;
+	padding: 18px 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+`;
+
+export const Logo = styled.p`
+	display: flex;
+	align-items: center;
+	height: 55px;
+	width: 158px;
+	background-image: url(${LogoImg});
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+`;
+
+export const ResizeButton = styled.button`
+	padding: 0px;
+	cursor: pointer;
+	color: ${color.white};
+	& > i {
+		&:hover {
+			color: ${color.quarternary};
+		}
+	}
+`;
+
+export const MainContent = styled.div`
+	display: block;
+	min-width: 220px;
+`;
+
+export const UserProfile = styled.div`
+	align-items: center;
+	padding: 14px 12px;
+	position: relative;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+export const EditButton = styled.button`
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	padding: 0;
+	cursor: pointer;
+	& > i {
+		width: 22px;
+		height: 22px;
+		line-height: 22px;
+		text-align: center;
+		background-color: ${color.white};
+		color: #e93773;
+		border-radius: 50%;
+		&:hover {
+			background-color: ${color.quarternary};
+		}
+	}
+`;
+
+export const UserIcon = styled.div`
+	text-align: center;
+	margin-bottom: 5px;
+	& > i {
+		cursor: pointer;
+		&:before {
+			border: 2px solid rgba(255, 255, 255, 0.9);
+		}
+	}
+`;
+
+export const UserProfileOverview = styled.div`
+	text-align: center;
+	.profile-name {
+		font-size: 14px;
+		font-weight: 600;
+		margin-bottom: 5px;
+	}
+	.profile-role {
+		font-size: 12px;
+		display: inline-block;
+		color: ${color.white};
+		background-color: ${color.highlightPrimary};
+		border-radius: 3px;
+		line-height: 1;
+		padding: 3px 6px;
+		font-weight: 600;
+	}
+`;
+
+export const LogoutButton = styled(Button)`
+	transition: all 0.3s;
+	margin: 30px;
+	border-radius: 20px;
+	color: ${color.textDarkest};
+	min-width: 160px;
+	width: 160px;
+	& > i {
+		margin-right: 8px;
+		color: ${color.textDarkest};
+	}
+	&:hover {
+		background-color: ${color.quarternary};
+	}
+`;
+
+export const DemoSettingButton = styled(Button)`
+	transition: all 0.3s;
+	margin: 0 30px;
+	border-radius: 20px;
+	color: ${color.textDarkest};
+	min-width: 160px;
+	width: 160px;
+	color: #fff;
+	background-color: ${color.highlightPrimary};
+	font-weight: 600;
+	& > i {
+		margin-right: 8px;
+	}
+	&:hover {
+		background-color: ${color.quarternary};
+	}
+`;

@@ -1,0 +1,152 @@
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectProjectById } from "../../../../../redux/projects/projects.selectors";
+import { color } from "../../../../../shared/utils/styles";
+import {
+	ColorBox,
+	CompletionText,
+	Container,
+	Detail,
+	DetailTop,
+	InnerText,
+	IssueCount,
+	Left,
+	Right,
+} from "./DoughnutChart.style";
+
+Chart.plugins.unregister(ChartDataLabels);
+
+// Set some options for doughnut chart.
+const doughnutChartOption = {
+	maintainAspectRatio: false,
+	// responsive: false,
+	animation: {
+		duration: 1000,
+	},
+	cutoutPercentage: 50,
+	legend: {
+		position: "right",
+		labels: {
+			fontSize: 13.5,
+			fontStyle: 600,
+			fontColor: color.textDark,
+			padding: 14,
+			fontFamily: "Poppins, 'sans-serif'",
+			boxWidth: 14,
+		},
+		display: false,
+	},
+	plugins: {
+		// Change options for ALL labels of THIS CHART
+		datalabels: {
+			color: "#fff",
+			font: {
+				size: "16",
+				weight: "600",
+			},
+			display: function (context) {
+				return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+			},
+		},
+	},
+};
+
+const colors = [
+	"#0f35a9",
+	"#8CD7F8",
+	"rgba(101,186,67, .6)",
+	"rgba(101, 84, 192)",
+	"#CAF0F8",
+	"rgba(228, 77, 66, .8)",
+	"rgba(253, 180, 77,.8)",
+	"rgb(89, 140, 255)",
+];
+
+const DoughnutChart = ({ project: { columns, columnOrder }, tickets }) => {
+	const canvasRef = useRef(null);
+	const [completePercent, setCompletePercent] = useState(0);
+
+	useEffect(() => {
+		const myChartRef = canvasRef.current.getContext("2d");
+		new Chart(myChartRef, {
+			type: "doughnut",
+			plugins: [ChartDataLabels],
+			data: {
+				labels: columnOrder.map((columnId) => {
+					if (columns[columnId].title.length > 24) {
+						return columns[columnId].title.substring(0, 24) + "...";
+					}
+					return columns[columnId].title;
+				}),
+				datasets: [
+					{
+						data: columnOrder.map(
+							(columnId) => columns[columnId].taskIds.length
+						),
+						backgroundColor: columnOrder.map(
+							(columnId, index) => colors[index]
+						),
+					},
+				],
+			},
+			options: doughnutChartOption,
+		});
+		// Set percentage of completed issues.
+		setCompletePercent(getCompletedPercentage(columns, tickets));
+	}, []);
+
+	const getCompletedPercentage = (columns, tickets) => {
+		const doneColumn = Object.values(columns).find(
+			(column) => column.isDoneColumn
+		);
+		const doneIssues = doneColumn.taskIds.length;
+
+		if (doneIssues === 0) return 0;
+
+		return Math.floor((doneIssues / tickets.length) * 100);
+	};
+
+	return (
+		<Container>
+			<Left>
+				<canvas ref={canvasRef} />
+				<InnerText>
+					<IssueCount>{tickets.length}</IssueCount>
+					issues
+				</InnerText>
+				<CompletionText>
+					<span>
+						Completed {completePercent}% of {tickets.length} issues.
+					</span>
+				</CompletionText>
+			</Left>
+			<Right>
+				{columnOrder.map((columnId, index) => (
+					<Detail key={columnId}>
+						<DetailTop>
+							<ColorBox
+								style={{ backgroundColor: colors[index] }}
+							></ColorBox>
+							{columns[columnId].title}
+						</DetailTop>
+					</Detail>
+				))}
+			</Right>
+		</Container>
+	);
+};
+
+DoughnutChart.propTypes = {
+	project: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) =>
+	createStructuredSelector({
+		project: selectProjectById(ownProps.projectId),
+	});
+
+export default connect(mapStateToProps, null)(DoughnutChart);

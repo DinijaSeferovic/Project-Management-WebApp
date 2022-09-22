@@ -1,0 +1,2 @@
+export const GET_ORG_MEMBERS = "GET_MEMBERS";
+export const UPDATE_MEMBER = "UPDATE_MEMBER";
